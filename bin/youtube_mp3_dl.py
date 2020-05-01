@@ -7,7 +7,7 @@ import argparse
 from argparse import RawTextHelpFormatter
 import os
 # my lib
-BASE_CMD = "youtube_dl --extract-audio '{}' --output {}"
+BASE_CMD = "youtube-dl --extract-audio '{}' --output {}"
 
 
 def fnmstr(path_str):
@@ -53,7 +53,7 @@ if __name__ == "__main__":
                                 description=msg,
                                 fromfile_prefix_chars="@",
                                 formatter_class=RawTextHelpFormatter)
-    parser.add_argument("dl_url", type=str, nargs="+")
+    parser.add_argument("dl_urls", type=str, nargs="+")
     parser.add_argument("--off_dbox", action="store_true", default=False)
     parser.add_argument("--outmp3s", type=str, nargs="+", required=True)
     args = parser.parse_args()
@@ -64,5 +64,8 @@ if __name__ == "__main__":
         raise AssertionError("")
     fpathtodbox = FpathtoDropbox()
     for url, omp3 in zip(DL_URLS, OUTMP3S):
-        converted_omp3 = fpathtodbox(omp3)
+        if not OFF_DBOX:
+            converted_omp3 = fpathtodbox(omp3)
+        else:
+            converted_omp3 = omp3
         download_contents_to_mp3(url, converted_omp3)
