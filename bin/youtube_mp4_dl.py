@@ -34,7 +34,8 @@ class FpathtoDropbox(object):
             if os.path.exists(dropbox_path):
                 self.dropbox_path = dropbox_path
             else:
-                raise OSError("invalid dropbox_path is entered.")
+                raise OSError(
+                       "invalid dropbox_path is entered.")
 
     def __call__(self, path):
         if os.path.basename(path) == path:
@@ -43,16 +44,15 @@ class FpathtoDropbox(object):
                             path)
         else:
             outpath = path
-
         return outpath
 
 
 if __name__ == "__main__":
     msg = "this program download mp4"
     parser = argparse.ArgumentParser(
-                                description=msg,
-                                fromfile_prefix_chars="@",
-                                formatter_class=RawTextHelpFormatter)
+                            description=msg,
+                            fromfile_prefix_chars="@",
+                            formatter_class=RawTextHelpFormatter)
     parser.add_argument("dl_urls", type=str, nargs="+")
     parser.add_argument("--off_dbox", action="store_true", default=False)
     parser.add_argument("--outmp4s", type=str, nargs="+", required=True)
