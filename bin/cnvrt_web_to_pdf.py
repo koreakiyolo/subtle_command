@@ -12,9 +12,12 @@ from gmail import ContFpathMimetype
 
 env_dict = os.environ.copy()
 HOME_PATH = env_dict["HOME"]
-DEFAULT_SETTING_PATH = os.path.join(
+DEFAULT_KINFLE_SETPATH = os.path.join(
                                   HOME_PATH,
                                   "/Users/haruyuki/.__setting/kindle.json")
+DEFAULT_COMPANY_SETPATH = os.path.join(
+                                HOME_PATH,
+                                "/Users/haruyuki/.__setting/hitachi.json")
 GMAIL_ACCOUNT_KEY = "gmail_account"
 GMAIL_PASSWD_KEY = "gmail_passwd"
 KINDLE_ADDRESS_KEY = "to_kindle_address"
@@ -38,8 +41,8 @@ def fnmstr(path_str):
 
 
 def send_pdf_to_kindle(opdf, delete=True,
-                       kindle_setfile=DEFAULT_SETTING_PATH):
-    input_dict = json.load(open(kindle_setfile))
+                       json_setfile=DEFAULT_KINFLE_SETPATH):
+    input_dict = json.load(open(json_setfile))
     g_account = input_dict[GMAIL_ACCOUNT_KEY]
     g_pass = input_dict[GMAIL_PASSWD_KEY]
     to_kindle_addr = input_dict[KINDLE_ADDRESS_KEY]
@@ -66,15 +69,24 @@ if __name__ == "__main__":
                              default=None)
     parser.add_argument("--opdfs", type=str, nargs="+", required=True)
     parser.add_argument("--to_kindle", action="store_true", default=False)
+    parser.add_argument("--to_hitachi", action="store_true", default=False)
     parser.add_argument(
                     "--jsonsetting", type=fnmstr, nargs="?",
-                    default=DEFAULT_SETTING_PATH)
+                    default=None)
     args = parser.parse_args()
     URLS = args.urls
     HTML_AND_CSS = args.html_and_css
     OPDFS = args.opdfs
     TO_KINDLE = args.to_kindle
+    TO_HITACHI = args.to_hitachi
     JSONSETTING = args.jsonsetting
+    if JSONSETTING is None:
+        if TO_KINDLE:
+            JSONSETTING = DEFAULT_KINFLE_SETPATH
+        elif TO_HITACHI:
+            JSONSETTING = DEFAULT_COMPANY_SETPATH
+        else:
+            raise AssertionError("")
     # output pdfs from web pages.
     if URLS is not None:
         if len(URLS) != len(OPDFS):
@@ -82,10 +94,9 @@ if __name__ == "__main__":
             raise AssertionError(emes)
         for url, opdf in zip(URLS, OPDFS):
             pdfkit.from_url(url, opdf, options=G_PDF_OPTIONS)
-            if TO_KINDLE:
+            if TO_KINDLE or TO_HITACHI:
                 send_pdf_to_kindle(opdf, delete=True,
-                                   kindle_setfile=JSONSETTING)
-
+                                   json_setfile=JSONSETTING)
     elif HTML_AND_CSS is not None:
         if len(OPDFS) != 1:
             raise AssertionError(
@@ -94,7 +105,8 @@ if __name__ == "__main__":
         opdf = OPDFS[0]
         pdfkit.from_file(HTML_FILE, opdf, css=CSS_FILE,
                          options=G_PDF_OPTIONS)
-        send_pdf_to_kindle(opdf, delete=True,
-                           kindle_setfile=JSONSETTING)
+        if TO_HITACHI or TO_KINDLE:
+            send_pdf_to_kindle(opdf, delete=True,
+                               kindle_setfile=JSONSETTING)
     else:
         raise AssertionError("")
