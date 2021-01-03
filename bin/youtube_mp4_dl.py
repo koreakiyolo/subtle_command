@@ -7,7 +7,7 @@ import argparse
 from argparse import RawTextHelpFormatter
 import os
 # my lib
-BASE_CMD = "youtube-dl '{}' --output {}"
+BASE_CMD = "youtube-dl '{}' --output '{}' -f mp4"
 
 
 def fnmstr(path_str):
@@ -29,7 +29,7 @@ def download_contents_to_mp4(url, omp4):
 class FpathtoDropbox(object):
     def __init__(self, dropbox_path=None):
         if dropbox_path is None:
-            self.dropbox_path = os.environ["DROPBOXPATH"]
+            self.dropbox_path = os.environ["ICLOUDPATH_MP4"]
         else:
             if os.path.exists(dropbox_path):
                 self.dropbox_path = dropbox_path
@@ -54,17 +54,17 @@ if __name__ == "__main__":
                             fromfile_prefix_chars="@",
                             formatter_class=RawTextHelpFormatter)
     parser.add_argument("dl_urls", type=str, nargs="+")
-    parser.add_argument("--off_dbox", action="store_true", default=False)
+    parser.add_argument("--off_share_cloud", action="store_true", default=False)
     parser.add_argument("--outmp4s", type=str, nargs="+", required=True)
     args = parser.parse_args()
     DL_URLS = args.dl_urls
-    OFF_DBOX = args.off_dbox
+    OFF_SHARE_CLOUD = args.off_share_cloud
     OUTMP4S = args.outmp4s
     if len(DL_URLS) != len(OUTMP4S):
         raise AssertionError("")
     fpathtodbox = FpathtoDropbox()
     for url, omp4 in zip(DL_URLS, OUTMP4S):
-        if not OFF_DBOX:
+        if not OFF_SHARE_CLOUD:
             converted_omp4 = fpathtodbox(omp4)
         else:
             converted_omp4 = omp4

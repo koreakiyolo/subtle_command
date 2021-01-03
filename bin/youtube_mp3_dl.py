@@ -7,7 +7,7 @@ import argparse
 from argparse import RawTextHelpFormatter
 import os
 # my lib
-BASE_CMD = "youtube-dl --extract-audio '{}' --output {}"
+BASE_CMD = "youtube-dl '{}' --extract-audio --audio-format mp3 --output '{}'"
 
 
 def fnmstr(path_str):
@@ -29,21 +29,19 @@ def download_contents_to_mp3(url, omp3):
 class FpathtoDropbox(object):
     def __init__(self, dropbox_path=None):
         if dropbox_path is None:
-            self.dropbox_path = os.environ["DROPBOXPATH"]
+            self.dropbox_path = os.environ["ICLOUDPATH_MP3"]
         else:
             if os.path.exists(dropbox_path):
                 self.dropbox_path = dropbox_path
             else:
                 raise OSError("invalid dropbox_path is entered.")
 
-    def __call__(self, path):
-        if os.path.basename(path) == path:
-            outpath = os.path.join(
+    def __call__(self, path, tmpext=".mkv"):
+        basename = os.path.basename(path)
+        tmp_fnm = os.path.splitext(basename)[0] + tmpext
+        outpath = os.path.join(
                             self.dropbox_path,
-                            path)
-        else:
-            outpath = path
-
+                            tmp_fnm)
         return outpath
 
 
@@ -65,7 +63,7 @@ if __name__ == "__main__":
     fpathtodbox = FpathtoDropbox()
     for url, omp3 in zip(DL_URLS, OUTMP3S):
         if not OFF_DBOX:
-            converted_omp3 = fpathtodbox(omp3)
+            tmp_mkv = fpathtodbox(omp3)
         else:
-            converted_omp3 = omp3
-        download_contents_to_mp3(url, converted_omp3)
+            tmp_mkv = omp3
+        download_contents_to_mp3(url, tmp_mkv)

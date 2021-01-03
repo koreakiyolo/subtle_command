@@ -1,5 +1,12 @@
 #!/usr/bin/evn python3
 
+import shutil
+
+
+def confirm_cmd(cmd):
+    if shutil.which(cmd) is None:
+        raise TypeError("cmdisn't exisiting.")
+
 
 def confirm_attributions(tg_ins, attrs):
     emes_base = "{} doesn's have {} as a attribute."

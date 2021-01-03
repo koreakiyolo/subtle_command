@@ -70,3 +70,23 @@ class ArgsDictCaller(object):
     @property
     def keys(self):
         return self.args_dict.keys()
+
+
+def getenv(env_nm):
+    env_dict = os.environ.copy()
+    if env_nm not in env_dict:
+        emes = "ENV: {} hasn't been definied.".format(
+                                                    env_nm)
+        raise OSError(emes)
+    env_value = env_dict[env_nm]
+    return env_value
+
+
+def env_to_fnmstr(env_nm):
+    env_str = getenv(env_nm)
+    return fnmstr(env_str)
+
+
+def env_to_dirstr(env_nm):
+    env_str = getenv(env_nm)
+    return dirstr(env_str)
