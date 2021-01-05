@@ -39,3 +39,9 @@ def write_list(tg_list, fpath, mode="w"):
 def convert_dict_to_json(dict_ins, json_fpath):
     with open(json_fpath, "w") as write:
         json.dump(dict_ins, write)
+
+
+def load_dict_from_json(json_fpath):
+    with open(json_fpath, "r") as read:
+        json_dict = json.load(read)
+    return json_dict

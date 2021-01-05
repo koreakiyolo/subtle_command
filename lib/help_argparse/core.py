@@ -2,6 +2,7 @@
 
 
 import os
+from datetime import datetime
 
 
 def print_global_varibales():
@@ -11,6 +12,22 @@ def print_global_varibales():
     print("== global varibale is in the following. ==")
     print(print_dict)
     print("==========================================")
+
+
+def to_dtime(string, fmt="%Y/&m/%d"):
+    dtime = datetime.strptime(string, fmt)
+    return dtime
+
+
+class ToDtime(object):
+    def __init__(self, fmt="%Y/&m/%d"):
+        self.fmt = fmt
+
+    def __call__(self, string):
+        dtime = datetime.strptime(
+                              string,
+                              self.fmt)
+        return dtime
 
 
 def fnmstr(path_str):
