@@ -46,7 +46,7 @@ class AdminGSerach(object):
         if dtime is None:
             return None
         assert isinstance(dtime, datetime)
-        dtime_string = dtime.strptime("%m/%d/%Y")
+        dtime_string = dtime.strftime("%m/%d/%Y")
         return dtime_string
 
     def _set_gnews_updater(self):
