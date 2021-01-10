@@ -24,6 +24,8 @@ class ClipBoardCollector(object):
             except KeyboardInterrupt:
                 break
         for va in self._internal_set:
+            if not isinstance(va, str):
+                continue
             line = va + "\n"
             self._write.write(line)
         self._write.close()
